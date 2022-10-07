@@ -2,7 +2,8 @@ from datetime import datetime
 
 from click import echo
 from sqlalchemy import Column, DateTime, Integer, create_engine
-from sqlalchemy.orm import declarative_base, declared_attr, scoped_session, sessionmaker
+from sqlalchemy.orm import (declarative_base, declared_attr, scoped_session,
+                            sessionmaker)
 
 engine = create_engine("postgresql://douwe:123456@localhost:5432/tavern2", echo=True)
 db_session = scoped_session(
