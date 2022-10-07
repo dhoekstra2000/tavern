@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: T.A.V.E.R.N. Api
+  version: "0.1.0"
+paths:
+  /users:
+    get:
+      summary: Get list of users
+      operationId: tavern.controllers.users.read_all
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  
+    post:
+      summary: Add new user
+      operationId: tavern.controllers.users.create
+      requestBody:
+        description: User to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+          
+      responses:
+        201:
+          description: User created succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        409:
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+  /users/by-id/{user_id}:
+    get:
+      summary: Get user by id
+      operationId: tavern.controllers.users.read_one_by_id
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the user to get
+      responses:
+        200:
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User with ID not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    put:
+      summary: Update user with id
+      operationId: tavern.controllers.users.update_by_id
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the user to update
+      requestBody:
+        description: Data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        200:
+          description: User updates successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/by-username/{username}:
+    get:
+      summary: Get user by username
+      operationId: tavern.controllers.users.read_one_by_username
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: username of the user to get
+      responses:
+        200:
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User with username not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    put:
+      summary: Update user with username
+      operationId: tavern.controllers.users.update_by_username
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: Username of the user to update
+      requestBody:
+        description: Data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        200:
+          description: User updates successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+
+  /users/auth:
+    post:
+      summary: Get JWT token for user
+      operationId: tavern.controllers.users.authenticate
+      requestBody:
+        description: Data for authentication
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Authenticated succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+          
+components:
+  schemas:
+    ErrorMessage:
+      type: object
+      properties:
+        msg:
+          type: string
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        date_created:
+          type: string
+        date_updated:
+          type: string
+
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: tavern.security.decode_token
