@@ -1,13 +1,13 @@
 import time
 
-from passlib.hash import pbkdf2_sha256
-from flask import jsonify
 import jwt
+from flask import jsonify
+from passlib.hash import pbkdf2_sha256
 
+from tavern.config import AppConfig
 from tavern_db.database import db_session
 from tavern_db.models import User
 from tavern_db.schemas import UserSchema
-from tavern.config import AppConfig
 
 
 def read_all():
