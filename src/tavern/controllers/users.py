@@ -5,11 +5,13 @@ from flask import jsonify
 from passlib.hash import pbkdf2_sha256
 
 from tavern.config import AppConfig
+from tavern.security import needs_permission
 from tavern_db.database import db_session
 from tavern_db.models import User
 from tavern_db.schemas import UserSchema
 
 
+@needs_permission("User | can list users")
 def read_all():
     users = User.query.all()
 

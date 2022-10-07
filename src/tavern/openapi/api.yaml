@@ -194,6 +194,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
 
+  /permissions:
+    get:
+      summary: Get list of permissions
+      security:
+        - jwt: []
+      operationId: tavern.controllers.permissions.read_all
+      responses:
+        200:
+          description: Retrieved permissions succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+
+  /user-groups:
+    get:
+      summary: Get list of user groups
+      security:
+        - jwt: []
+      operationId: tavern.controllers.user_groups.read_all
+      responses:
+        200:
+          description: Retrieved groups succcesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+
           
 components:
   schemas:
@@ -213,6 +241,32 @@ components:
         id:
           type: integer
         username:
+          type: string
+        date_created:
+          type: string
+        date_updated:
+          type: string
+    UserGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Permission"
+        date_created:
+          type: string
+        date_updated:
+          type: string
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
           type: string
         date_created:
           type: string
