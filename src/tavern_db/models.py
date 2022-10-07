@@ -32,7 +32,7 @@ class Permission(Base):
 
 class UserGroup(Base):
     name = Column(String)
-    superuser = Column(Boolean)
+    superuser = Column(Boolean, default=False)
     users = relationship("User", back_populates="group")
     permissions = relationship("Permission", secondary=group_permission_table)
 
