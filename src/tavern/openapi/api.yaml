@@ -162,6 +162,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        409:
+          description: Group already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
 
 
   /users/auth:
@@ -220,8 +226,36 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserGroup'
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGroup'
 
+    post:
+      summary: Create a new group
+      security:
+        - jwt: []
+      operationId: tavern.controllers.user_groups.create
+      requestBody:
+        description: Data for new group
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        201:
+          description: Created group successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
           
 components:
   schemas:
