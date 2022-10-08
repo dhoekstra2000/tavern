@@ -34,6 +34,8 @@ paths:
                   type: string
                 password:
                   type: string
+                group:
+                  type: int
           
       responses:
         201:
@@ -98,6 +100,8 @@ paths:
               properties:
                 password:
                   type: string
+                group:
+                  type: int
       responses:
         200:
           description: User updates successfully

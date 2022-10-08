@@ -7,7 +7,7 @@ from passlib.hash import pbkdf2_sha256
 from tavern.config import AppConfig
 from tavern.security import needs_permission
 from tavern_db.database import db_session
-from tavern_db.models import User
+from tavern_db.models import User, UserGroup
 from tavern_db.schemas import UserSchema
 
 
@@ -42,6 +42,7 @@ def read_one_by_username(username):
 def create(body):
     username = body.get("username")
     password = body.get("password")
+    group_id = body.get("group")
 
     existing_user = User.query.filter(User.username == username).one_or_none()
     if existing_user is not None:
@@ -49,6 +50,8 @@ def create(body):
 
     hash = pbkdf2_sha256.hash(password)
     user = User(username=username, password=hash)
+    group = UserGroup.query.filter(UserGroup.id == group_id).one_or_none()
+    user.group = group
     db_session.add(user)
     db_session.commit()
 
@@ -57,13 +60,18 @@ def create(body):
 
 
 def update_by_id(user_id, body):
-    password = body.get("password")
+    password = body.get("password", None)
+    group_id = body.get("group", None)
 
     user = User.query.filter(User.id == user_id).one_or_none()
     if user is None:
         return jsonify({"msg": f"User with ID {user_id} not found"}), 404
 
-    user.password = pbkdf2_sha256.hash(password)
+    if password:
+        user.password = pbkdf2_sha256.hash(password)
+    if group_id:
+        user.group = UserGroup.query.filter(UserGroup.id == group_id).one_or_none()
+
     db_session.commit()
 
     schema = UserSchema(only=["id", "username", "date_created", "date_updated"])
@@ -71,13 +79,18 @@ def update_by_id(user_id, body):
 
 
 def update_by_username(username, body):
-    password = body.get("password")
+    password = body.get("password", None)
+    group_id = body.get("group", None)
 
     user = User.query.filter(User.username == username).one_or_none()
     if user is None:
         return jsonify({"msg": f"User with ID {username} not found"}), 404
 
-    user.password = pbkdf2_sha256.hash(password)
+    if password:
+        user.password = pbkdf2_sha256.hash(password)
+    if group_id:
+        user.group = UserGroup.query.filter(UserGroup.id == group_id).one_or_none()
+
     db_session.commit()
 
     schema = UserSchema(only=["id", "username", "date_created", "date_updated"])
