@@ -526,6 +526,103 @@ paths:
               schema:
                 $ref: '#/components/schemas/BtwType'
 
+  /products:
+    get:
+      summary: Get list of all products
+      security:
+        - jwt: []
+      operationId: tavern.controllers.products.read_all
+      responses:
+        200:
+          description: Got products successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+    post:
+      summary: Create new product
+      security:
+        - jwt: []
+      operationId: tavern.controllers.products.create
+      requestBody:
+        description: Data for the new product
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                tag:
+                  type: string
+                price:
+                  type: integer
+                btw_id:
+                  type: integer
+      responses:
+        201:
+          description: New product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{product_id}:
+    get:
+      summary: Get product by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.products.read_one
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the product to get
+      responses:
+        200:
+          description: Got product successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      summary: Update product by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.products.update
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the product to update
+      requestBody:
+        description: Data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                tag:
+                  type: string
+      responses:
+        200:
+          description: Updated product successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
 components:
   schemas:
     ErrorMessage:
@@ -613,6 +710,49 @@ components:
           type: string
         percentage:
           type: integer
+    SalesPrice:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+        date_updated:
+          type: string
+        price:
+          type: integer
+        btw:
+          $ref: '#/components/schemas/BtwType'
+    ProductPosition:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+        date_updated:
+          type: string
+        amount:
+          type: integer
+        value:
+          type: integer
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+        date_updated:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+        current_price:
+          $ref: '#/components/schemas/SalesPrice'
+        current_position:
+          $ref: '#/components/schemas/ProductPosition'
 
   securitySchemes:
     jwt:

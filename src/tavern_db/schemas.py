@@ -1,11 +1,19 @@
 from re import L
 
-from marshmallow.fields import Boolean
+from marshmallow.fields import Boolean, Integer
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
 
-from tavern_db.models import (BtwType, Permission, Product, ProductPosition,
-                              Relation, User, UserGroup)
+from tavern_db.models import (
+    BtwType,
+    Permission,
+    Product,
+    ProductPosition,
+    Relation,
+    SalesPrice,
+    User,
+    UserGroup,
+)
 
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -44,7 +52,7 @@ class BtwTypeSchema(SQLAlchemyAutoSchema):
 
 class SalesPriceSchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = BtwType
+        model = SalesPrice
         load_instance = True
 
 
@@ -58,3 +66,6 @@ class ProductSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Product
         load_instance = True
+
+    current_price = Nested(SalesPriceSchema, dump_only=True)
+    current_position = Nested(ProductPositionSchema, dump_only=True)
