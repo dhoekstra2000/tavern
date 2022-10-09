@@ -35,7 +35,7 @@ paths:
                 password:
                   type: string
                 group:
-                  type: int
+                  type: integer
           
       responses:
         201:
@@ -101,7 +101,7 @@ paths:
                 password:
                   type: string
                 group:
-                  type: int
+                  type: integer
       responses:
         200:
           description: User updates successfully
@@ -159,6 +159,8 @@ paths:
               properties:
                 password:
                   type: string
+                group:
+                  type: integer
       responses:
         200:
           description: User updates successfully
@@ -256,6 +258,59 @@ paths:
       responses:
         201:
           description: Created group successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+
+  /user-groups/{group_id}:
+    get:
+      summary: Get particular user group
+      security:
+        - jwt: []
+      operationId: tavern.controllers.user_groups.read_one
+      parameters:
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: Id of the group to get
+      responses:
+        200:
+          description: Got user group with id successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+
+    put:
+      summary: Update particular user group
+      security:
+        - jwt: []
+      operationId: tavern.controllers.user_groups.update
+      parameters:
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: Id of the group to get
+      requestBody:
+        description: Data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: array
+                  items: 
+                    type: integer
+      responses:
+        200:
+          description: Updated user group with id successfully
           content:
             application/json:
               schema:

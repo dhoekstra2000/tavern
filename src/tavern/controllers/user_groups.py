@@ -14,6 +14,15 @@ def read_all():
     return schema.dump(groups)
 
 
+def read_one(group_id):
+    group = UserGroup.query.filter(UserGroup.id == group_id).one_or_none()
+    if group is None:
+        return jsonify({"msg": f"User group with id {group_id} not found"}), 404
+
+    schema = UserGroupSchema()
+    return schema.dump(group)
+
+
 def create(body):
     name = body.get("name")
     permissions = body.get("permissions")
@@ -34,3 +43,22 @@ def create(body):
 
     schema = UserGroupSchema()
     return schema.dump(group), 201
+
+
+def update(group_id, body):
+    permissions = body.get("permissions")
+
+    existing_group = UserGroup.query.filter(UserGroup.id == group_id).one_or_none()
+    if existing_group is None:
+        return jsonify({"msg": f"Group with id {group_id} not found."}), 404
+
+    perms = [
+        Permission.query.filter(Permission.id == id).one_or_none() for id in permissions
+    ]
+    perms = [p for p in perms if p is not None]
+
+    existing_group.permissions = perms
+    db_session.commit()
+
+    schema = UserGroupSchema()
+    return schema.dump(existing_group)
