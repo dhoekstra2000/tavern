@@ -1,6 +1,6 @@
+from marshmallow.fields import Boolean
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
-from marshmallow.fields import Boolean
 
 from tavern_db.models import Permission, Relation, User, UserGroup
 

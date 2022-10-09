@@ -368,7 +368,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Relation'
-          
+
+  /relations/{relation_id}:
+    get:
+      summary: Get relation by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.relations.read_one
+      parameters:
+        - in: path
+          name: relation_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the relation to get
+      responses:
+        200:
+          description: Got relation with id successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
+
+    put:
+      summary: Update relation by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.relations.update
+      parameters:
+        - in: path
+          name: relation_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the relation to update
+      requestBody:
+        description: Data for the new relation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                short_name:
+                  type: string
+                kvk_number:
+                  type: string
+                address:
+                  type: string
+                email:
+                  type: string
+                account:
+                  type: string
+                has_budget:
+                  type: boolean
+                budget:
+                  type: integer
+      responses:
+        200:
+          description: Updated relation succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
+
 components:
   schemas:
     ErrorMessage:
