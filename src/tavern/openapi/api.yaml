@@ -315,6 +315,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserGroup'
+
+  /relations:
+    get:
+      summary: Get all relations
+      security:
+        - jwt: []
+      operationId: tavern.controllers.relations.read_all
+      responses:
+        200:
+          description: Succesfully read all relations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Relation'
+
+    post:
+      summary: Create new relation
+      security:
+        - jwt: []
+      operationId: tavern.controllers.relations.create
+      requestBody:
+        description: Data for the new relation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                short_name:
+                  type: string
+                kvk_number:
+                  type: string
+                address:
+                  type: string
+                email:
+                  type: string
+                account:
+                  type: string
+                has_budget:
+                  type: boolean
+                budget:
+                  type: integer
+      responses:
+        201:
+          description: Relation created succesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
           
 components:
   schemas:
@@ -365,6 +418,31 @@ components:
           type: string
         date_updated:
           type: string
+    Relation:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+        date_updated:
+          type: string
+        name:
+          type: string
+        short_name:
+          type: string
+        kvk_number:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+        account:
+          type: string
+        has_budget:
+          type: boolean
+        budget:
+          type: integer
 
   securitySchemes:
     jwt:

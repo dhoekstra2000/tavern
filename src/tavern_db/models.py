@@ -1,4 +1,6 @@
+from attr import has
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 from .database import Base, db_session
@@ -52,3 +54,23 @@ class UserGroup(Base):
         if not perm or not perm in self.permissions:
             return
         self.permissions.remove(perm)
+
+
+class Relation(Base):
+    name = Column(String, nullable=False)
+    short_name = Column(String(32))
+    kvk_number = Column(String)
+
+    address = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+
+    account = Column(String)
+    budget = Column(Integer)
+
+    @hybrid_property
+    def has_budget(self):
+        return self.budget is not None
+
+    @has_budget.setter
+    def has_budget(self, value):
+        self.budget = 0 if value else None
