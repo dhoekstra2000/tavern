@@ -563,6 +563,8 @@ paths:
                   type: integer
                 btw_id:
                   type: integer
+                group_id:
+                  type: integer
       responses:
         201:
           description: New product created successfully
@@ -615,6 +617,8 @@ paths:
                   type: string
                 tag:
                   type: string
+                group_id:
+                  type: integer
       responses:
         200:
           description: Updated product successfully
@@ -622,6 +626,96 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
+
+  /groups:
+    get:
+      summary: Get list of product groups
+      security:
+        - jwt: []
+      operationId: tavern.controllers.groups.read_all
+      responses:
+        200:
+          description: Got products successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+
+    post:
+      summary: Create new product group
+      security:
+        - jwt: []
+      operationId: tavern.controllers.groups.create
+      requestBody:
+        required: true
+        description: Data for the new group
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Created product successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+  
+  /groups/{group_id}:
+    get:
+      summary: Get product groups by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.groups.read_one
+      parameters:
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the product group to get
+      responses:
+        200:
+          description: Got product successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+
+    put:
+      summary: Update product groups by id
+      security:
+        - jwt: []
+      operationId: tavern.controllers.groups.update
+      parameters:
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: integer
+          description: Id of the product group to get
+      requestBody:
+        required: true
+        description: Data for the updated group
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Updated product successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
 
 components:
   schemas:
@@ -753,6 +847,21 @@ components:
           $ref: '#/components/schemas/SalesPrice'
         current_position:
           $ref: '#/components/schemas/ProductPosition'
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+        date_updated:
+          type: string
+        name:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
 
   securitySchemes:
     jwt:

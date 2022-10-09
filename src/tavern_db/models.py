@@ -1,7 +1,15 @@
 from datetime import datetime
 
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        Table, func)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    func,
+)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -98,9 +106,17 @@ class ProductPosition(Base):
     product_id = Column(ForeignKey("product.id"))
 
 
+class Group(Base):
+    name = Column(String)
+
+    products = relationship("Product", back_populates="group")
+
+
 class Product(Base):
     name = Column(String, nullable=False)
     tag = Column(String(32))
+    group_id = Column(ForeignKey("group.id"))
+    group = relationship("Group", back_populates="products")
 
     sales_prices = relationship(
         "SalesPrice", lazy="dynamic", order_by="desc(SalesPrice.date_from)"
@@ -111,17 +127,13 @@ class Product(Base):
 
     @hybrid_property
     def current_price(self):
-        return (
-            self.sales_prices.filter(SalesPrice.date_from <= datetime.utcnow)
-            .order_by(func.desc(SalesPrice.date_from))
-            .first()
-        )
+        return self.sales_prices.filter(
+            SalesPrice.date_from <= datetime.utcnow()
+        ).first()
 
     @hybrid_property
     def current_position(self):
-        return self.product_positions.order_by(
-            func.desc(ProductPosition.date_updated)
-        ).first()
+        return self.product_positions.first()
 
     @hybrid_property
     def amount(self):
